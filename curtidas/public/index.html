@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Post do Blog</title>
+</head>
+<body>
+  <h1>Post: Como usar Node.js com HTML</h1>
+  <p>Este é um exemplo de post em um blog que você pode curtir.</p>
+
+  <button id="likeBtn">Curtir</button>
+  <p id="likeCount">Curtidas: carregando...</p>
+
+  <script>
+    async function carregarCurtidas() {
+      const res = await fetch('/api/likes');
+      const data = await res.json();
+      document.getElementById('likeCount').innerText = `Curtidas: ${data.likes}`;
+    }
+
+    document.getElementById('likeBtn').addEventListener('click', async () => {
+      const res = await fetch('/api/like', { method: 'POST' });
+      const data = await res.json();
+      document.getElementById('likeCount').innerText = `Curtidas: ${data.likes}`;
+    });
+
+    carregarCurtidas();
+  </script>
+</body>
+</html>
