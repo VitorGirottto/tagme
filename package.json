@@ -1,0 +1,8 @@
+{
+  "name": "tagme",
+  "version": "1.0.0",
+  "description": "Projeto TAGME fullstack",
+  "private": true,
+  "scripts": {},
+  "dependencies": {}
+}
