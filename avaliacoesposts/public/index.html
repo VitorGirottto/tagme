@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Avaliação do Post</title>
+  <style>
+    .estrela {
+      font-size: 30px;
+      cursor: pointer;
+      color: lightgray;
+    }
+    .ativa {
+      color: gold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Post do Blog</h1>
+  <p>Este é um post de exemplo. Avalie abaixo:</p>
+
+  <div id="estrelas">
+    <span class="estrela" data-valor="1">★</span>
+    <span class="estrela" data-valor="2">★</span>
+    <span class="estrela" data-valor="3">★</span>
+    <span class="estrela" data-valor="4">★</span>
+    <span class="estrela" data-valor="5">★</span>
+  </div>
+
+  <p id="resultado">Carregando avaliações...</p>
+
+  <script>
+    let selecionado = 0;
+
+    const estrelas = document.querySelectorAll('.estrela');
+    const resultado = document.getElementById('resultado');
+
+    async function carregarMedia() {
+      const res = await fetch('/api/avaliacoes');
+      const dados = await res.json();
+      resultado.innerText = `Média: ${dados.media} (${dados.total} avaliações)`;
+    }
+
+    estrelas.forEach(estrela => {
+      estrela.addEventListener('mouseover', () => {
+        const valor = estrela.dataset.valor;
+        estrelas.forEach(e => {
+          e.classList.toggle('ativa', e.dataset.valor <= valor);
+        });
+      });
+
+      estrela.addEventListener('click', async () => {
+        const valor = parseInt(estrela.dataset.valor);
+        if (selecionado === 0) {
+          selecionado = valor;
+          await fetch('/api/avaliar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nota: valor })
+          });
+          carregarMedia();
+        } else {
+          alert("Você já avaliou.");
+        }
+      });
+
+      estrela.addEventListener('mouseout', () => {
+        estrelas.forEach(e => {
+          e.classList.toggle('ativa', e.dataset.valor <= selecionado);
+        });
+      });
+    });
+
+    carregarMedia();
+  </script>
+</body>
+</html>
